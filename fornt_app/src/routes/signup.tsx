@@ -1,5 +1,7 @@
 import DefaultSignup from "../layout/DefaultSignup";
 import {useState} from 'react';
+import { useAuth } from "../auth/AuthProvider";
+import { Navigate } from 'react-router-dom';  
 
 
 export default function Signup() {
@@ -8,6 +10,12 @@ export default function Signup() {
   const [lastname, setLastname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const auth = useAuth();
+
+  if(auth.isAuthenticated){
+    return <Navigate to="/dashboard" />;
+  }
 
 
 

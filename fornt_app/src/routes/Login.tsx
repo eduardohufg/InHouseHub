@@ -1,10 +1,20 @@
 import DefaultL from "../layout/DefaultL"
 import {useState} from 'react';
+import { useAuth } from "../auth/AuthProvider";
+import { Navigate } from 'react-router-dom';
 
 export default function Login() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  const auth = useAuth();
+
+  if(auth.isAuthenticated){
+    return <Navigate to="/dashboard" />;
+  }
+
+
 
   return(
     <DefaultL>

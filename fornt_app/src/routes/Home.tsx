@@ -1,7 +1,15 @@
 import DefaultHome from "../layout/DefaultHome"
+import { useAuth } from "../auth/AuthProvider";
+import { Navigate } from 'react-router-dom';
 
 
 export default function Home() {
+
+    const auth = useAuth();
+
+    if(auth.isAuthenticated){
+      return <Navigate to="/dashboard" />;
+    }
     return(
         <DefaultHome>
         
