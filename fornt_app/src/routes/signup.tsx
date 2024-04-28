@@ -5,7 +5,7 @@ import { ErrorResponse, Navigate, useNavigate } from 'react-router-dom';
 import { c } from "tar";
 
 import { API_URL } from "../auth/constants";
-import { AuthresponseError } from "../types/types";
+import type { AuthresponseError } from "../types/types";
 
 
 

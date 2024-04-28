@@ -1,14 +1,50 @@
 import DefaultL from "../layout/DefaultL"
 import {useState} from 'react';
 import { useAuth } from "../auth/AuthProvider";
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { API_URL } from "../auth/constants";
+import type { AuthresponseError } from "../types/types";
+
 
 export default function Login() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorResponse, setErrorResponse] =  useState("");
 
   const auth = useAuth();
+
+  const goTo = useNavigate();
+
+
+  async function handleSubmit(e: React.FormEvent <HTMLFormElement>){
+    e.preventDefault();
+    
+    try{
+      const response = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({username, password})
+      });	
+      
+      if(response.ok){
+        console.log("Logged in successfully");
+        setErrorResponse("");
+        goTo("/login");
+     }
+     else{
+       console.error("Failed to login");
+       const json = (await response.json()) as AuthresponseError;
+       setErrorResponse(json.body.error);
+     }
+  }
+
+  catch(err){
+    console.log(err);
+  }
+  }
 
   if(auth.isAuthenticated){
     return <Navigate to="/dashboard" />;
@@ -18,12 +54,13 @@ export default function Login() {
 
   return(
     <DefaultL>
-      <form className="form">
+      <form className="form" onSubmit={handleSubmit}>
       <h1>Login</h1>
+      {!!errorResponse && <div className="errorMessage">{errorResponse}</div>}
       <label>Username</label>
-      <input type="text" value= {username} name="username" required onChange={(e) => setUsername(e.target.value)} />
+      <input type="text" value= {username} onChange={(e) => setUsername(e.target.value)} />
       <label>Password</label>
-      <input type="password" value= {password} name="password" required onChange={(e) => setPassword(e.target.value)} />
+      <input type="password" value= {password} onChange={(e) => setPassword(e.target.value)} />
       <button type="submit">Login</button>
       
       </form>
