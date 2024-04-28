@@ -1,7 +1,9 @@
+
+
 const router = require('express').Router();
 
-router.route('/').get((req, res) => {
-    res.send('signout');
+router.post('/').get((req, res) => {
+   
 });
 
 module.exports = router;    
