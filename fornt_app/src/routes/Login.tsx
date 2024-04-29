@@ -3,7 +3,7 @@ import {useState} from 'react';
 import { useAuth } from "../auth/AuthProvider";
 import { Navigate, useNavigate } from 'react-router-dom';
 import { API_URL } from "../auth/constants";
-import type { AuthresponseError } from "../types/types";
+import type { Authresponse, AuthresponseError } from "../types/types";
 
 
 export default function Login() {
@@ -32,7 +32,15 @@ export default function Login() {
       if(response.ok){
         console.log("Logged in successfully");
         setErrorResponse("");
-        goTo("/login");
+        const json = (await response.json()) as Authresponse;
+
+        if(json.body.accessToken && json.body.refreshToken){
+          auth.saveUser(json);
+          goTo("/dashboard");
+        }
+
+
+        //goTo("/login");
      }
      else{
        console.error("Failed to login");

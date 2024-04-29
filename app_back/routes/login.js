@@ -1,8 +1,11 @@
 const router = require('express').Router();
 const { u } = require('tar');
 const { jsonResponse } = require('../lib/jsonResponse');
+const User = require('../schema/user');
+const { getUserinfo } = require("../lib/getUserinfo");
 
-router.post('/',(req, res) => {
+
+router.post('/', async (req, res) => {
     const {username, password} = req.body;
 
     if(!!!username || !!!password){
@@ -11,19 +14,27 @@ router.post('/',(req, res) => {
 
     }
 
-    const accessToken = "access-token";
-    const refreshToken = "refresh-token";
-    const user = {
-        id: '1',
-        name: 'John',
-        username: 'johnzx',
+    const user =await  User.findOne({username });
+
+    if(!user){
+        return res.status(400).json(jsonResponse(400, {error: "user not found"}));
+    }
+    else{
+        const correctPassword = await user.comparePassword(password, user.password);
+        if(correctPassword){
+            const accessToken = user.createAccessToken();
+            const refreshToken = await user.createRefreshToken();
+    
+            res.status(200).json(jsonResponse(200, {user: getUserinfo(user), accessToken, refreshToken}));
+            
+        }
+        else{
+            return res.status(400).json(jsonResponse(400, {error: "user or password not found"}));
+        }
     }
 
-
-    
-    res.status(200).json(jsonResponse(200, {user, accessToken, refreshToken}));
-    
-    res.send('signout');
+ 
+  
 });
 
 module.exports = router;    

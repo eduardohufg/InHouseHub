@@ -1,6 +1,12 @@
 const Mongoose = require("mongoose");
 const { u } = require("tar");
 const bcrypt = require('bcrypt');
+const { generateAccessToken, generateRefreshToken } = require("../auth/generateTokens");
+const { getUserinfo } = require("../lib/getUserinfo");
+const Token = require("../schema/token");
+
+
+
 
 const UserSchaema = new Mongoose.Schema({
     id: {
@@ -55,6 +61,23 @@ UserSchaema.methods.comparePassword = async function(password, hash){
 
     return same;
 }   
+
+UserSchaema.methods.createAccessToken = function(){
+    return generateAccessToken(getUserinfo(this));
+};
+
+UserSchaema.methods.createRefreshToken = async function(){
+    const refreshToken = generateRefreshToken(getUserinfo(this));
+    try {
+        await new Token({token: refreshToken}).save();
+        return refreshToken;
+    } catch (error) {
+        console.log(error);
+        
+    }
+};
+
+
 
 
 module.exports = Mongoose.model('User', UserSchaema);

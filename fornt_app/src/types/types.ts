@@ -19,3 +19,11 @@ export interface User {
     lastname: string;
     username: string;
 }   
+
+export interface AccessTokenResponse {
+    statusCode: number;
+    body: {
+        accessToken: string;
+    },
+    error?: string;
+}
