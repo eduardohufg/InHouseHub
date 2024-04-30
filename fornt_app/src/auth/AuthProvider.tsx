@@ -27,7 +27,7 @@ export function AuthProvider({ children }:  AuthContextType) {
     useEffect(() => {}, []);
 
 
-    async function requestAccessToken(refreshToken: string){
+    async function requestNewAccessToken(refreshToken: string){
         try {
             const response = await fetch( `${API_URL}/refresh-token`, {
                 method: 'POST',
