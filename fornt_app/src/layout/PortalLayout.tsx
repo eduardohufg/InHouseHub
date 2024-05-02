@@ -48,7 +48,7 @@ export default function PortalLayout({ children }: {
                     </ul>
                 </nav>
             </header>
-            <main>{children}</main>
+            <main className='dashboard'>{children}</main>
         </>
     );
 }
