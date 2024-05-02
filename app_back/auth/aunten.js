@@ -12,7 +12,7 @@ function aunten(req, res, next) {
         const decode = verifyAccessTokens(token);
         if(decode){
 
-            req.user = { ...decode };
+            req.user = { ...decode.user };
             next();
         }
         else{

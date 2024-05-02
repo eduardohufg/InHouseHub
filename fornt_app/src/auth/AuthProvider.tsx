@@ -36,7 +36,7 @@ export function AuthProvider({ children }:  AuthContextType) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ${refreshToken}'
+                    'Authorization': `Bearer ${refreshToken}`
                 },
                 
             });
@@ -63,7 +63,7 @@ export function AuthProvider({ children }:  AuthContextType) {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ${accessToken}'
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 
             });
