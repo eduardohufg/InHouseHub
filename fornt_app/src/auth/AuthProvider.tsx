@@ -15,6 +15,7 @@ const AuthContext = createContext({
     saveUser: (userData: Authresponse) => {},
     getRefreshToken: () => {},
     getUser: () => ({}) as User | undefined,
+    signOut: () => {},
 
 });
 
@@ -23,6 +24,7 @@ export function AuthProvider({ children }:  AuthContextType) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [accessToken, setAccessToken] = useState<string>("");
     const [user, setUser] = useState<User>();
+    const [isloading, setIsLoading] = useState(true);
     //const [refreshToken, setRefreshToken] = useState<string>("");
 
     useEffect(() => {
@@ -85,7 +87,12 @@ export function AuthProvider({ children }:  AuthContextType) {
     }
 
 
-   
+   function signOut(){
+    setIsAuthenticated(false);
+    setAccessToken("");
+    setUser(undefined);
+    localStorage.removeItem("token");
+   }
 
     async function checkAuth(){
         if(accessToken){
@@ -99,13 +106,13 @@ export function AuthProvider({ children }:  AuthContextType) {
                     const userInfo = await getUserInfo(newAccessToken);
                     if(userInfo){
                        saveSessionInfo(userInfo, newAccessToken, token);
-                }
-
-            
+                       setIsLoading(false);
+                       return;
+                }            
             }
         }   
-
     }
+    setIsLoading(false);
 }
 
 
@@ -157,8 +164,8 @@ export function AuthProvider({ children }:  AuthContextType) {
 
 
     
-    return(<AuthContext.Provider value={{ isAuthenticated,getAccessToken, saveUser, getRefreshToken, getUser }}>
-        {children}
+    return(<AuthContext.Provider value={{ isAuthenticated,getAccessToken, saveUser, getRefreshToken, getUser, signOut, }}>
+        {isloading? <div>Loading...</div>: children}
         </AuthContext.Provider>
     );
   

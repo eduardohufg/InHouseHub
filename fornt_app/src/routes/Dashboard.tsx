@@ -3,6 +3,7 @@ import { useState } from "react";
 import { API_URL } from "../auth/constants";
 import { u } from "tar";
 import { useEffect } from "react";
+import PortalLayout from "../layout/PortalLayout";
 
 interface Todo {
   _id: string;
@@ -77,8 +78,8 @@ export default function Dashboard() {
 
 
 
-  return <div>
-            <h1>DASHBOARD de {auth.getUser()?.name || ""}</h1>
+  return (<PortalLayout>
+            <h1>Dasboard de {auth.getUser()?.name || ""}</h1>
               <form onSubmit={handleSubmit}>
                 <input type="text" 
                 placeholder="nuevo todo" 
@@ -89,5 +90,7 @@ export default function Dashboard() {
 
 
             {todos.map((todo) => (<div key = {todo._id}>{todo.title}</div>))}
-        </div>;
+        </PortalLayout>
+
+  );
 }
