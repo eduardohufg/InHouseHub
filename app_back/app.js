@@ -22,7 +22,7 @@ app.use('/api/signup', require('./routes/signup'));
 app.use('/api/login', require('./routes/login'));
 app.use('/api/user',aunten, require('./routes/user'));
 app.use('/api/todos',aunten,  require('./routes/todos'));
-app.use('/api/refreshToken', require('./routes/refreshToken'));
+app.use('/api/refresh-token', require('./routes/refreshToken'));
 app.use('/api/signout', require('./routes/signout'));
 
 
