@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const mqtt = require('mqtt');
 
+let lasstMessage = "No data received";
+
 router.get('/', (req, res) => {
     // Conectar al broker MQTT
     const client = mqtt.connect('mqtt://localhost:1883');
@@ -9,7 +11,7 @@ router.get('/', (req, res) => {
         console.log("Connected to MQTT broker");
         client.subscribe("presence", (err) => {
             if (!err) {
-                client.publish("presence", "Hello max");
+                console.log("Subscribed to topic 'presence'");
             } else {
                 res.status(500).send("Failed to subscribe");
             }
@@ -19,7 +21,8 @@ router.get('/', (req, res) => {
     client.on("message", (topic, msg) => {
         console.log("Received message:", msg.toString());
         // Enviar la respuesta y cerrar la conexión
-        res.send(msg.toString());
+        lasstMessage = msg.toString();
+        res.send(lasstMessage);
         client.end();
     });
 
@@ -32,7 +35,7 @@ router.get('/', (req, res) => {
     // Timeout para cerrar la conexión si no se recibe ningún mensaje
     setTimeout(() => {
         if (!res.headersSent) {
-            res.send("No message received");
+            res.send(lasstMessage);
             client.end();
         }
     }, 5000);  // Espera 5 segundos por un mensaje
