@@ -4,6 +4,10 @@ import { API_URL } from "../auth/constants";
 import { u } from "tar";
 import { useEffect } from "react";
 import PortalLayout from "../layout/PortalLayout";
+//import Player from "@madzadev/audio-player";
+import "@madzadev/audio-player/dist/index.css";
+import Player1 from "./player";
+
 
 interface Todo {
   _id: string;
@@ -87,9 +91,14 @@ export default function Dashboard() {
                 value = {title}/>
               </form>
               
+              
+
+              
+              
 
 
-            {todos.map((todo) => (<div key = {todo._id}>{todo.title}</div>))}
+            {todos.map((todo) => (<div key = {todo._id}>{todo.title}</div>))}4
+            <Player1 />
         </PortalLayout>
 
   );
