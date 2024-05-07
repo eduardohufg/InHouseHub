@@ -15,6 +15,7 @@ export default function Home() {
             const response = await Axios.get(`${API_URL}/mqtt_manager`);
             setData(response.data);
             console.log(response);
+            
         } catch (error) {
             console.error("Error fetching data:", error);
             setData("Error fetching data");
