@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"InHouseHub/internal/database"
-	"InHouseHub/internal/model"
+	"InHouseHub/database"
+	"InHouseHub/model"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -1,15 +1,14 @@
-package internal
+package server
 
 import (
 	"log"
 
-	"InHouseHub/internal/database"
-	"InHouseHub/internal/handler"
+	"InHouseHub/config"
+	"InHouseHub/database"
+	"InHouseHub/server/handler"
 
 	"github.com/gofiber/fiber/v2"
 )
-
-const Port = ":8080"
 
 func StartServer(db *database.Database) {
 	app := fiber.New()
@@ -28,5 +27,5 @@ func StartServer(db *database.Database) {
 	user := app.Group("/user")
 	user.Post("/register", handler.Register)
 
-	log.Fatal(app.Listen(Port))
+	log.Fatal(app.Listen(config.Get("SERVER_PORT")))
 }

@@ -7,11 +7,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"InHouseHub/internal/model"
+	"InHouseHub/config"
+	"InHouseHub/model"
 )
-
-const DatabaseUrl = "mongodb://localhost:27017"
-const DatabaseName = "InHouseHub"
 
 type Database struct {
 	Client *mongo.Client
@@ -32,7 +30,7 @@ func StartDatabase() *Database {
 }
 
 func (db *Database) Connect() {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(DatabaseUrl))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(config.Get("DATABASE_URL")))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,11 +40,11 @@ func (db *Database) Connect() {
 }
 
 func (db *Database) CreateCollection(collection string) {
-	db.Client.Database(DatabaseName).CreateCollection(context.Background(), collection)
+	db.Client.Database(config.Get("DATABASE_NAME")).CreateCollection(context.Background(), collection)
 }
 
 func (db *Database) GetCollection(collection string) *mongo.Collection {
-	return db.Client.Database(DatabaseName).Collection(collection)
+	return db.Client.Database(config.Get("DATABASE_NAME")).Collection(collection)
 }
 
 func (db *Database) CreateUser(user model.User) error {

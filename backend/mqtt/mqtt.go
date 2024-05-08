@@ -1,15 +1,15 @@
-package internal
+package mqtt
 
 import (
 	"fmt"
 	"log"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+
+	"InHouseHub/config"
 )
 
-const Broker = "tcp://localhost:1883"
 const Topic = "test"
-const ClientId = "backend"
 
 var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
 	log.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
@@ -25,8 +25,8 @@ var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err
 
 func StartMQTT() {
 	opts := mqtt.NewClientOptions()
-	opts.AddBroker(Broker)
-	opts.SetClientID(ClientId)
+	opts.AddBroker(config.Get("MQTT_BROKER"))
+	opts.SetClientID(config.Get("MQTT_CLIENT_ID"))
 	opts.SetDefaultPublishHandler(messagePubHandler)
 	opts.OnConnect = connectHandler
 	opts.OnConnectionLost = connectLostHandler
@@ -42,6 +42,6 @@ func StartMQTT() {
 		return
 	}
 
-	log.Println("Connected to MQTT broker:", Broker)
+	log.Println("Connected to MQTT broker:", config.Get("MQTT_BROKER"))
 	log.Println("Subscribed to topic:", Topic)
 }

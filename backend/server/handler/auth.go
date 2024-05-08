@@ -3,7 +3,7 @@ package handler
 import (
 	"log"
 
-	"InHouseHub/internal/model"
+	"InHouseHub/model"
 
 	"github.com/gofiber/fiber/v2"
 )
