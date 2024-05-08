@@ -2,15 +2,16 @@ package main
 
 import (
 	"InHouseHub/internal"
+	"InHouseHub/internal/database"
 )
 
 func main() {
 	// Start the database
-	_ = internal.StartDatabase()
+	db := database.StartDatabase()
 
 	// Start the MQTT client
 	internal.StartMQTT()
 
 	// Start the server
-	internal.StartServer()
+	internal.StartServer(*db)
 }

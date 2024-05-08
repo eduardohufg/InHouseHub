@@ -1,8 +1,7 @@
 package handler
 
 import (
-	"log"
-
+	"InHouseHub/internal/database"
 	"InHouseHub/internal/model"
 
 	"github.com/gofiber/fiber/v2"
@@ -16,7 +15,15 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	log.Println(user)
+	// Get database
+	db := c.Locals("db").(*database.Database)
+
+	// Create user
+	if err := db.CreateUser(user); err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"message": "Failed to create user",
+		})
+	}
 
 	return c.Status(200).JSON(fiber.Map{
 		"message": "Register",
