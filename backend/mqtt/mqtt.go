@@ -1,7 +1,6 @@
 package mqtt
 
 import (
-	"fmt"
 	"log"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -9,7 +8,7 @@ import (
 	"InHouseHub/config"
 )
 
-const Topic = "test"
+var Topics = []string{"device/+/status"}
 
 var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
 	log.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
@@ -17,6 +16,14 @@ var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 
 var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
 	log.Println("Connected to MQTT broker")
+
+	for _, t := range Topics {
+		if token := client.Subscribe(t, 0, nil); token.Wait() && token.Error() != nil {
+			log.Printf("Error subscribing to topic: %s, error: %v\n", t, token.Error())
+		} else {
+			log.Printf("Subscribed to topic: %s\n", t)
+		}
+	}
 }
 
 var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err error) {
@@ -36,12 +43,5 @@ func StartMQTT() {
 		panic(token.Error())
 	}
 
-	token := client.Subscribe(Topic, 0, nil)
-	if token.Wait() && token.Error() != nil {
-		fmt.Println("Error subscribing to topic:", Topic, token.Error())
-		return
-	}
-
 	log.Println("Connected to MQTT broker:", config.Get("MQTT_BROKER"))
-	log.Println("Subscribed to topic:", Topic)
 }
