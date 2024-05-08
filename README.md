@@ -1,5 +1,11 @@
 # InHouseHub
 
+## Endpoints
+
+- API: `http://localhost:8080/api`
+- MQTT: `tcp://localhost:1883`
+- SOCKET: `ws://localhost:8080/ws`
+
 ## Environment Variables
 
 ```bash

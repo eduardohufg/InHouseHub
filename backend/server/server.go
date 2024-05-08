@@ -23,12 +23,15 @@ func StartServer(db *database.Database) {
 	// Socket
 	socket.SetupSocket(app)
 
+	// Api
+	api := app.Group("/api")
+
 	// Auth
-	auth := app.Group("/auth")
+	auth := api.Group("/auth")
 	auth.Post("/login", handler.Login)
 
 	// User
-	user := app.Group("/user")
+	user := api.Group("/user")
 	user.Post("/register", handler.Register)
 
 	log.Fatal(app.Listen(config.Get("SERVER_PORT")))
