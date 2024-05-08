@@ -22,6 +22,7 @@ func Register(c *fiber.Ctx) error {
 	_, err := db.GetUserByEmail(newUser.Email)
 
 	if err != nil {
+		// Hash password
 		if password, err := pkg.HashPassword(newUser.Password); err != nil {
 			return c.Status(500).JSON(fiber.Map{
 				"message": "Failed to hash password",
@@ -29,11 +30,13 @@ func Register(c *fiber.Ctx) error {
 		} else {
 			newUser.Password = password
 
+			// Create userS
 			if id, err := db.CreateUser(newUser); err != nil {
 				return c.Status(500).JSON(fiber.Map{
 					"message": "Failed to create user",
 				})
 			} else {
+				// Generate token
 				if token, err := pkg.GenerateToken(id); err != nil {
 					return c.Status(500).JSON(fiber.Map{
 						"message": "Failed to generate token",
