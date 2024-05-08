@@ -15,4 +15,5 @@ DATABASE_NAME = "InHouseHub"
 MQTT_BROKER = "tcp://localhost:1883"
 MQTT_CLIENT_ID = "backend"
 SERVER_PORT = ":8080"
+SECRET_KEY = "secret"
 ```
