@@ -2,6 +2,7 @@ package internal
 
 import (
 	"fmt"
+	"log"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -11,15 +12,15 @@ const Topic = "test"
 const ClientId = "backend"
 
 var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
-	fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
+	log.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
 }
 
 var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
-	fmt.Println("Connected")
+	log.Println("Connected to MQTT broker")
 }
 
 var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err error) {
-	fmt.Printf("Connect lost: %v", err)
+	log.Printf("Connect lost: %v", err)
 }
 
 func StartMQTT() {
@@ -37,7 +38,10 @@ func StartMQTT() {
 
 	token := client.Subscribe(Topic, 0, nil)
 	if token.Wait() && token.Error() != nil {
-		fmt.Println("Error subscribing to topic: ", Topic, token.Error())
+		fmt.Println("Error subscribing to topic:", Topic, token.Error())
 		return
 	}
+
+	log.Println("Connected to MQTT broker:", Broker)
+	log.Println("Subscribed to topic:", Topic)
 }

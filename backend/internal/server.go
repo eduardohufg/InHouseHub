@@ -6,6 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+const Port = ":8080"
+
 func StartServer() {
 	app := fiber.New()
 
@@ -13,5 +15,5 @@ func StartServer() {
 		return c.SendString("Hello, World!")
 	})
 
-	log.Fatal(app.Listen(":5000"))
+	log.Fatal(app.Listen(Port))
 }
