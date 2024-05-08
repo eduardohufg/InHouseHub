@@ -13,5 +13,5 @@ func main() {
 	internal.StartMQTT()
 
 	// Start the server
-	internal.StartServer(*db)
+	internal.StartServer(db)
 }

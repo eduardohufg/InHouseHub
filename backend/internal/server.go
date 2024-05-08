@@ -11,7 +11,7 @@ import (
 
 const Port = ":8080"
 
-func StartServer(db database.Database) {
+func StartServer(db *database.Database) {
 	app := fiber.New()
 
 	// Database
