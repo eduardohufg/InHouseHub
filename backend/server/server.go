@@ -6,6 +6,7 @@ import (
 	"InHouseHub/config"
 	"InHouseHub/database"
 	"InHouseHub/server/handler"
+	"InHouseHub/socket"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -18,6 +19,9 @@ func StartServer(db *database.Database) {
 		c.Locals("db", db)
 		return c.Next()
 	})
+
+	// Socket
+	socket.SetupSocket(app)
 
 	// Auth
 	auth := app.Group("/auth")
