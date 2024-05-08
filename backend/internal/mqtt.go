@@ -6,9 +6,9 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-const BROKER = "tcp://localhost:1883"
-const TOPIC = "test"
-const CLIENT_ID = "backend"
+const Broker = "tcp://localhost:1883"
+const Topic = "test"
+const ClientId = "backend"
 
 var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
 	fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
@@ -24,8 +24,8 @@ var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err
 
 func StartMQTT() {
 	opts := mqtt.NewClientOptions()
-	opts.AddBroker(BROKER)
-	opts.SetClientID(CLIENT_ID)
+	opts.AddBroker(Broker)
+	opts.SetClientID(ClientId)
 	opts.SetDefaultPublishHandler(messagePubHandler)
 	opts.OnConnect = connectHandler
 	opts.OnConnectionLost = connectLostHandler
@@ -35,9 +35,9 @@ func StartMQTT() {
 		panic(token.Error())
 	}
 
-	token := client.Subscribe(TOPIC, 0, nil)
+	token := client.Subscribe(Topic, 0, nil)
 	if token.Wait() && token.Error() != nil {
-		fmt.Println("Error subscribing to topic: ", TOPIC, token.Error())
+		fmt.Println("Error subscribing to topic: ", Topic, token.Error())
 		return
 	}
 }
