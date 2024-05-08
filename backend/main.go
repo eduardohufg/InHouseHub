@@ -6,4 +6,5 @@ import (
 
 func main() {
 	internal.StartMQTT()
+	internal.StartServer()
 }
