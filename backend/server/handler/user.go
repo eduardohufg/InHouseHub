@@ -6,6 +6,7 @@ import (
 	"InHouseHub/pkg"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func Register(c *fiber.Ctx) error {
@@ -21,7 +22,7 @@ func Register(c *fiber.Ctx) error {
 
 	_, err := db.GetUserByEmail(newUser.Email)
 
-	if err != nil {
+	if err == mongo.ErrNoDocuments {
 		// Hash password
 		if password, err := pkg.HashPassword(newUser.Password); err != nil {
 			return c.Status(500).JSON(fiber.Map{

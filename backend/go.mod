@@ -3,9 +3,11 @@ module InHouseHub
 go 1.22.2
 
 require (
+	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/eclipse/paho.mqtt.golang v1.4.3 // indirect
 	github.com/fasthttp/websocket v1.5.8 // indirect
+	github.com/gofiber/contrib/jwt v1.0.9 // indirect
 	github.com/gofiber/contrib/websocket v1.3.1 // indirect
 	github.com/gofiber/fiber/v2 v2.52.4 // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect

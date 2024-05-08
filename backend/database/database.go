@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -68,6 +69,10 @@ func (db *Database) CreateUser(user model.User) (string, error) {
 
 func (db *Database) GetUserByEmail(email string) (model.User, error) {
 	var user model.User
-	err := db.UserCollection.FindOne(context.Background(), model.User{Email: email}).Decode(&user)
-	return user, err
+	err := db.UserCollection.FindOne(context.Background(), bson.M{"email": email}).Decode(&user)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }

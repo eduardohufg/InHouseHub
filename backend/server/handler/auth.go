@@ -4,9 +4,22 @@ import (
 	"InHouseHub/database"
 	"InHouseHub/model"
 	"InHouseHub/pkg"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
+
+func Auth(c *fiber.Ctx) error {
+	id := c.Locals("user").(*jwt.Token)
+	claims := id.Claims.(jwt.MapClaims)
+
+	log.Println("Auth", claims["id"])
+	return c.Status(200).JSON(fiber.Map{
+		"message": "Auth",
+		"user":    claims["id"],
+	})
+}
 
 func Login(c *fiber.Ctx) error {
 	var user model.User
