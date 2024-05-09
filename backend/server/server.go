@@ -5,6 +5,7 @@ import (
 
 	"InHouseHub/config"
 	"InHouseHub/database"
+	"InHouseHub/mqtt"
 	"InHouseHub/server/handler"
 	"InHouseHub/socket"
 
@@ -12,7 +13,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func StartServer(db *database.Database) {
+func StartServer(db *database.Database, mqttBroadcast <-chan mqtt.Message) {
 	app := fiber.New()
 
 	// Database
@@ -20,9 +21,6 @@ func StartServer(db *database.Database) {
 		c.Locals("db", db)
 		return c.Next()
 	})
-
-	// Socket
-	socket.SetupSocket(app)
 
 	// Api
 	api := app.Group("/api")
@@ -43,6 +41,9 @@ func StartServer(db *database.Database) {
 	app.Use(jwtware.New(jwtware.Config{
 		SigningKey: jwtware.SigningKey{Key: []byte(config.Get("SECRET_KEY"))},
 	}))
+
+	// Socket
+	socket.SetupSocket(app, mqttBroadcast)
 
 	// Auth
 	api.Get("/auth", handler.Auth)

@@ -8,11 +8,12 @@ import (
 	"InHouseHub/config"
 )
 
-var Topics = []string{"device/+/status"}
-
-var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
-	log.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
+type Message struct {
+	Topic   string
+	Payload string
 }
+
+var Topics = []string{"sensor/+/status"}
 
 var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
 	log.Println("Connected to MQTT broker")
@@ -30,11 +31,18 @@ var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err
 	log.Printf("Connect lost: %v", err)
 }
 
-func StartMQTT() {
+func StartMQTT(mqttBroadcast chan<- Message) {
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(config.Get("MQTT_BROKER"))
 	opts.SetClientID(config.Get("MQTT_CLIENT_ID"))
-	opts.SetDefaultPublishHandler(messagePubHandler)
+
+	opts.SetDefaultPublishHandler(func(client mqtt.Client, msg mqtt.Message) {
+		mqttBroadcast <- Message{
+			Topic:   msg.Topic(),
+			Payload: string(msg.Payload()),
+		}
+	})
+
 	opts.OnConnect = connectHandler
 	opts.OnConnectionLost = connectLostHandler
 

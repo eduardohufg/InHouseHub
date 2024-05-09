@@ -15,12 +15,15 @@ func main() {
 		panic("Error loading .env file")
 	}
 
+	// Create a channel for broadcasting MQTT messages
+	mqttBroadcast := make(chan mqtt.Message)
+
 	// Start the database
 	db := database.StartDatabase()
 
 	// Start the MQTT client
-	mqtt.StartMQTT()
+	mqtt.StartMQTT(mqttBroadcast)
 
 	// Start the server
-	server.StartServer(db)
+	server.StartServer(db, mqttBroadcast)
 }
