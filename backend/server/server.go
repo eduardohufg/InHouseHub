@@ -11,16 +11,26 @@ import (
 
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func StartServer(db *database.Database, mqttBroadcast <-chan mqtt.Message) {
 	app := fiber.New()
+
+	// Cors
+	app.Use(cors.New())
 
 	// Database
 	app.Use(func(c *fiber.Ctx) error {
 		c.Locals("db", db)
 		return c.Next()
 	})
+
+	// Static
+	app.Static("/", "./public")
+
+	// WebRTC
+	socket.StartWebRTC(app)
 
 	// Api
 	api := app.Group("/api")
@@ -48,5 +58,6 @@ func StartServer(db *database.Database, mqttBroadcast <-chan mqtt.Message) {
 	// Auth
 	api.Get("/auth", handler.Auth)
 
-	log.Fatal(app.Listen(config.Get("SERVER_PORT")))
+	// Start the server
+	log.Fatal(app.ListenTLS(config.Get("SERVER_PORT"), "cert/cert.pem", "cert/key.pem"))
 }
