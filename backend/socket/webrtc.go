@@ -71,14 +71,22 @@ func StartWebRTC(app *fiber.App) {
 			}
 		}
 
+		otherIndex := 1 - index
+
 		defer func() {
 			session.Count--
 			session.Clients[index] = nil
+
 			if session.Count == 0 {
 				delete(sessions, id)
 			}
+
 			if err := c.Close(); err != nil {
 				log.Println("Error closing connection:", err)
+			}
+
+			if err := session.Clients[otherIndex].Conn.WriteMessage(websocket.TextMessage, []byte(`{"type":"bye"}`)); err != nil {
+				log.Println("Error writing message:", err)
 			}
 		}()
 
@@ -89,7 +97,6 @@ func StartWebRTC(app *fiber.App) {
 				break
 			}
 
-			otherIndex := 1 - index
 			if otherClient := session.Clients[otherIndex]; otherClient != nil && otherClient.Conn != nil {
 				log.Println("Sending message to other client")
 

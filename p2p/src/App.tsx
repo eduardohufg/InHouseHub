@@ -159,9 +159,6 @@ function App() {
       peerConnection.close();
       peerConnection = null;
     }
-
-    localStream?.getTracks().forEach(track => track.stop());
-    localStream = null;
   }
 
   useEffect(() => {
@@ -171,7 +168,7 @@ function App() {
       url = url.replace('localhost', window.location.hostname)
     }
 
-    navigator.mediaDevices.getUserMedia({ video: true })
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then(stream => {
         const video = videoRef.current
 
@@ -223,6 +220,12 @@ function App() {
       .catch(error => {
         console.error('Error accessing media devices:', error);
       })
+
+    return () => {
+      if (socket.current) {
+        socket.current.close();
+      }
+    }
   }, [])
 
   return (
