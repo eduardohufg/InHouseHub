@@ -6,12 +6,15 @@
 #include <PubSubClient.h>
 
 // Credenciales de la red Wi-Fi
-const char* ssid = "yourSSID";
-const char* password = "yourPassword";
+const char* ssid = "mamax";
+const char* password = "121212aaa";
 
 // Configuración del servidor MQTT
-const char* mqtt_server = "192.168.x.x";
+const char* mqtt_server = "192.168.132.120";
 const int mqtt_port = 1883;
+
+// Pin para el sensor MQ-135
+const int mq135Pin = 4;
 
 // Cliente WiFi y MQTT
 WiFiClient espClient;
@@ -23,6 +26,7 @@ Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(10085);
 
 void setup() {
   Serial.begin(115200);
+  delay(20000); // Esperar a que el MQ-135 se caliente durante 20 segundos
   setupWiFi();
   client.setServer(mqtt_server, mqtt_port);
 
@@ -39,6 +43,9 @@ void setup() {
     while (1);
   }
   Serial.println("BMP180 inicializado");
+
+  
+
 }
 
 void loop() {
@@ -51,6 +58,7 @@ void loop() {
 
   aht.getEvent(&humidity, &temp);
   bmp.getEvent(&pressure);
+  int airQuality = analogRead(mq135Pin);  // Leer el valor del MQ-135
 
   // Convertir los valores a cadenas
   char tempStr[8];
@@ -59,13 +67,31 @@ void loop() {
   dtostrf(humidity.relative_humidity, 1, 2, humStr);
   char presStr[8];
   dtostrf(pressure.pressure, 1, 2, presStr);
+  char airQualStr[8];
+  itoa(airQuality, airQualStr, 10);
 
   // Publicar en los tópicos MQTT
-  client.publish("home/temperature", tempStr);
-  client.publish("home/humidity", humStr);
+  client.publish("temperature", tempStr);
+  Serial.print("Temperatura: ");
+  Serial.print(tempStr);
+  Serial.println(" grados C");
+
+  client.publish("humidity", humStr);
+  Serial.print("Humedad: ");
+  Serial.print(humStr);
+  Serial.println(" %");
+
   if (pressure.pressure) {
-    client.publish("home/pressure", presStr);
+    client.publish("pressure", presStr);
+    Serial.print("Presion: ");
+    Serial.print(presStr);
+    Serial.println(" hPa");
   }
+
+  client.publish("airQuality", airQualStr);
+  Serial.print("Aire: ");
+  Serial.print(airQualStr);
+  Serial.println(" ppm");
 
   delay(2000);  // Espera de 2 segundos entre lecturas
 }
